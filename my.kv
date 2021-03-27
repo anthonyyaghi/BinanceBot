@@ -1,0 +1,133 @@
+<TextInput>
+    multiline: False
+<Button>
+    font_size: "25sp"
+<Label>
+    font_size: "25sp"
+
+
+<TrailScreen>
+    Label:
+        text: "Amount"
+        size_hint: (0.5, 0.1)
+        pos_hint: {"top": 1}
+    TextInput:
+        id: amount
+        size_hint: (0.5, 0.1)
+        pos_hint: {"top": 1, "right":1}
+
+    Label:
+        text: "Trailer distance in %"
+        size_hint: (0.5, 0.1)
+        pos_hint: {"top": 0.9}
+    TextInput:
+        id: trail_dist
+        size_hint: (0.5, 0.1)
+        pos_hint: {"top": 0.9, "right":1}
+
+    GridLayout:
+        cols: 2
+        size_hint: (1, 0.4)
+        pos_hint: {"y": 0.2}
+        Label:
+            text: "Trailing Sell"
+        CheckBox:
+            id: sell_radio
+            group: "group1"
+            active: True
+        Label:
+            text: "Trailing Buy"
+        CheckBox:
+            group: "group1"
+
+    Button:
+        text: "Back"
+        size_hint: (0.3, 0.15)
+        pos_hint: {"x": 0.1, "bottom": 1}
+        on_press: root.back_to_menu()
+
+    Button:
+        text: "Start"
+        size_hint: (0.3, 0.15)
+        pos_hint: {"right": 0.9, "bottom": 1}
+        on_press: root.start_bot('sell' if sell_radio.active else 'buy', amount.text, trail_dist.text)
+
+<MenuScreen>
+    live_price:live_price
+    coin_pair:coin_pair
+    coin_label_1:coin_label_1
+    coin_label_2:coin_label_2
+    coin_balance_1:coin_balance_1
+    coin_balance_2:coin_balance_2
+    status_label:status_label
+    Label:
+        text: "Coin Pair:"
+        size_hint: (0.33, 0.1)
+        pos_hint: {"top": 1}
+    TextInput:
+        id: coin_pair
+        size_hint: (0.34, 0.1)
+        pos_hint: {"x": 0.33, "top": 1}
+    Button:
+        size_hint: (0.33, 0.1)
+        pos_hint: {"x": 0.67, "top": 1}
+        text: "Load"
+        font_size: "25sp"
+        on_press: root.load()
+
+    Label:
+        text: "Balance"
+        font_size: "40sp"
+        size_hint: (1, 0.1)
+        pos_hint: {"top": 0.9}
+    Label:
+        id: coin_label_1
+        text: ""
+        size_hint: (0.5, 0.05)
+        pos_hint: {"top": 0.8}
+    Label:
+        id: coin_balance_1
+        text: ""
+        size_hint: (0.5, 0.05)
+        pos_hint: {"top": 0.8, "x": 0.5}
+    Label:
+        id: coin_label_2
+        text: ""
+        size_hint: (0.5, 0.05)
+        pos_hint: {"top": 0.7}
+    Label:
+        id: coin_balance_2
+        text: ""
+        size_hint: (0.5, 0.05)
+        pos_hint: {"top": 0.7, "x": 0.5}
+
+    Label:
+        text: "Live price: "
+        size_hint: (0.5, 0.1)
+        pos_hint: {"top": 0.6}
+    Label:
+        id: live_price
+        text: "58000"
+        size_hint: (0.5, 0.1)
+        pos_hint: {"x": 0.5, "top": 0.6}
+
+    Button:
+        text: "Add trailing stop"
+        font_size: "50sp"
+        size_hint: (0.5, 0.2)
+        pos_hint: {"center_x": 0.5, "center_y": 0.25}
+        on_press: root.open_trail_screen()
+
+    Label:
+        id: status_label
+        text: "Idle"
+        size_hint: (1, 0.1)
+        pos_hint: {"center_x": 0.5, "bottom": 1}
+
+<WindowManager>
+    MenuScreen:
+        wm: root
+        name: "menu"
+    TrailScreen:
+        wm: root
+        name: "trail"
