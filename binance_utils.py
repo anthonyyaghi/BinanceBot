@@ -6,14 +6,16 @@ from binance.enums import *
 from binance.exceptions import BinanceOrderException, BinanceAPIException
 from binance.websockets import BinanceSocketManager
 from twisted.internet import reactor
+from decimal import Decimal as D, ROUND_DOWN, ROUND_UP
+import decimal
 
 with open("api.txt", "r") as file:
     api_key = file.readline().strip()
     api_secret = file.readline().strip()
 
 client = Client(api_key, api_secret)
-client.API_URL = 'https://testnet.binance.vision/api'
-
+# client.API_URL = 'https://testnet.binance.vision/api'
+# print(client.API_URL)
 
 class PriceFetcher(threading.Thread):
     def __init__(self, coin_pair, label):
@@ -67,16 +69,19 @@ class TrailingBot(threading.Thread):
 
     def execute_trade(self):
         try:
+            info = client.get_symbol_info(symbol=self.live_price.text)
+            minimum = float(info['filters'][2]['minQty'])  # 'minQty'
+            quantity = D.from_float(self.amount).quantize(D(str(minimum)))
             if self.trail_type == 'sell':
                 client.create_order(symbol=self.symbol,
                                     side=SIDE_SELL,
                                     type=ORDER_TYPE_MARKET,
-                                    quantity=self.amount)
+                                    quantity=quantity)
             if self.trail_type == 'buy':
                 client.create_order(symbol=self.symbol,
                                     side=SIDE_BUY,
                                     type=ORDER_TYPE_MARKET,
-                                    quantity=self.amount)
+                                    quantity=quantity)
 
         except BinanceAPIException as e:
             print(e)
